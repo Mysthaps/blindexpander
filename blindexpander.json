@@ -1,0 +1,15 @@
+{
+    "id": "blindexpander",
+    "name": "Blind Expander",
+    "author": ["Mysthaps"],
+    "description": "Expands Blinds by adding functions",
+    "prefix": "blindexpander",
+    "main_file": "blindexpander.lua",
+    "version": "1.0.0",
+    "dependencies": [
+        "Steamodded (>=1.0.0~ALPHA-1314d)"
+    ],
+    "conflicts": [
+        "LobotomyCorp (>=1.1.0)"
+    ]
+}

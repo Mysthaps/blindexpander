@@ -182,17 +182,6 @@ function Game.update_new_round(self, dt)
             if G.GAME.blind.config.blind.phases and G.GAME.current_round.phases_beaten >= G.GAME.blind.config.blind.phases then
                 return update_new_roundref(self, dt)
             end
-            
-            G.STATE = G.STATES.DRAW_TO_HAND
-            G.E_MANAGER:add_event(Event({
-                trigger = 'ease',
-                blocking = false,
-                ref_table = G.GAME,
-                ref_value = 'chips',
-                ease_to = 0,
-                delay = 0.5 * G.SETTINGS.GAMESPEED,
-                func = (function(t) return math.floor(t) end)
-            }))
 
             if G.GAME.blind.config.blind.phase_refresh then 
                 -- Refresh deck
@@ -214,10 +203,6 @@ function Game.update_new_round(self, dt)
                     return true
                     end
                 }))
-
-                G.GAME.blind.prepped = nil
-                G.GAME.blind:set_text()
-                SMODS.juice_up_blind()
             end
 
             local obj = G.GAME.blind.config.blind
@@ -237,6 +222,17 @@ function Game.update_new_round(self, dt)
                 G.GAME.blind.boss = G.P_BLINDS[G.GAME.blind.original_blind].boss
                 G.GAME.current_round.dollars_to_be_earned = G.GAME.blind.dollars > 0 and (string.rep(localize('$'), G.GAME.blind.dollars)..'') or ('')
             end
+
+            G.STATE = G.STATES.DRAW_TO_HAND
+            G.E_MANAGER:add_event(Event({
+                trigger = 'ease',
+                blocking = false,
+                ref_table = G.GAME,
+                ref_value = 'chips',
+                ease_to = 0,
+                delay = 0.3 * G.SETTINGS.GAMESPEED,
+                func = (function(t) return math.floor(t) end)
+            }))
         end
     end
 

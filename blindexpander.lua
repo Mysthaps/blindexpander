@@ -57,12 +57,14 @@ local blind_saveref = Blind.save
 function Blind.save(self)
     local blindTable = blind_saveref(self)
     blindTable.passives = self.passives
+    blindTable.original_blind = self.original_blind
     return blindTable
 end
 
 local blind_loadref = Blind.load
 function Blind.load(self, blindTable)
     self.passives = blindTable.passives
+    self.original_blind = blindTable.original_blind
     blind_loadref(self, blindTable)
 end
 

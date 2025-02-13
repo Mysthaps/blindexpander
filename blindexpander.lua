@@ -15,7 +15,7 @@
 --- 
 --- NOTES
 --- 
---- Localization for Passives are taken from G.localization.descriptions.Passives
+--- Localization for Passives are taken from G.localization.descriptions.Passive
 --- Passive key should be "psv_[mod prefix]_[key]" for consistency
 --- SMODS.Blind.defeat(self) is called on the current blind if it has a summon
 --- If passive description is too long, changing how it is formatted instead of changing UIBox width is preferred

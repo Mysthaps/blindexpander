@@ -3,14 +3,14 @@
 --- SMODS.Blind.passives (table): Contains passives keys to attach to Blind
 --- SMODS.Blind.summon (string): After Blind is defeated, immediately sets new Blind with key
 --- G.GAME.blind.original_blind (string): Key of the first Blind if Blinds are summoned
---- SMODS.Blind.phases (int): Amount of times Blind needs to be defeated to end the round
---- G.GAME.current_round.phases_beaten (int): Amount of times Blind was beaten if Blind has phases
+--- SMODS.Blind.phases (number): Amount of times Blind needs to be defeated to end the round
+--- G.GAME.current_round.phases_beaten (number): Amount of times Blind was beaten if Blind has phases
 --- SMODS.Blind.phase_refresh (bool): Refreshes the deck when Blind is defeated (independent of SMODS.Blind.phases)
 --- 
---- SMODS.Blind.cry_score_cap(self, score) -> int: Caps score, the same effect as Cryptid's The Tax blind
---- SMODS.Blind.phase_change(self) -> void: Called when Blind is defeated and a new phase starts (either summon or phases)
---- SMODS.Blind.pre_defeat(self) -> void: Called when the final Blind (requires summon or phases) is defeated, but before deck shuffle and round eval occurs
---- SMODS.current_mod.passive_ui_size() -> int: Allows changing width of passive UIBox, default 6
+--- SMODS.Blind.cry_score_cap(self, score) -> number: Caps score, the same effect as Cryptid's The Tax blind
+--- SMODS.Blind.phase_change(self) -> nil: Called when Blind is defeated and a new phase starts (either summon or phases)
+--- SMODS.Blind.pre_defeat(self) -> nil: Called when the final Blind (requires summon or phases) is defeated, but before deck shuffle and round eval occurs
+--- SMODS.current_mod.passive_ui_size() -> number: Allows changing width of passive UIBox, default 6
 --- find_passive(string) -> bool: Check if current Blind has a specific passive key
 --- 
 --- NOTES
@@ -46,7 +46,6 @@ function Blind.set_blind(self, blind, reset, silent)
                     parent = self
                 }
             }
-            if first_time_passive then first_time_passive() end -- lobc exclusive
         else
             self.children.alert = nil
         end

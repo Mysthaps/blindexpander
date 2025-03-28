@@ -21,6 +21,9 @@
 --- If passive description is too long, changing how it is formatted instead of changing UIBox width is preferred
 
 -- copied from cryptid's cry_deep_copy
+
+to_big = to_big or function(x) return x end
+
 function lobc_deep_copy(obj, seen)
     if type(obj) ~= 'table' then return obj end
     if seen and seen[obj] then return seen[obj] end
@@ -170,7 +173,8 @@ function Game.update_new_round(self, dt)
                 end
             end
         else
-            if G.GAME.current_round.hands_left <= 0 and G.GAME.chips < G.GAME.blind.chips then 
+            local valueToPutInIf = (Talisman and to_big and to_big(G.GAME.chips):lt(to_big(G.GAME.blind.chips))) or to_big(G.GAME.chips) < to_big(G.GAME.blind.chips)
+            if G.GAME.current_round.hands_left <= 0 and valueToPutInIf then 
                 G.GAME.blind.original_blind = nil
                 G.STATE_COMPLETE = true
                 end_round()

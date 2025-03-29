@@ -7,7 +7,7 @@
 --- G.GAME.current_round.phases_beaten (number): Amount of times Blind was beaten if Blind has phases
 --- SMODS.Blind.phase_refresh (bool): Refreshes the deck when Blind is defeated (independent of SMODS.Blind.phases)
 --- 
---- SMODS.Blind.cry_score_cap(self, score) -> number: Caps score, the same effect as Cryptid's The Tax blind
+--- SMODS.Blind.cry_cap_score(self, score) -> number: Caps score, the same effect as Cryptid's The Tax blind
 --- SMODS.Blind.phase_change(self) -> nil: Called when Blind is defeated and a new phase starts (either summon or phases)
 --- SMODS.Blind.pre_defeat(self) -> nil: Called when the final Blind (requires summon or phases) is defeated, but before deck shuffle and round eval occurs
 --- SMODS.current_mod.passive_ui_size() -> number: Allows changing width of passive UIBox, default 6
@@ -32,6 +32,16 @@ function lobc_deep_copy(obj, seen)
     s[obj] = res
     for k, v in pairs(obj) do res[lobc_deep_copy(k, s)] = lobc_deep_copy(v, s) end
     return res
+end
+
+Blind.cry_cap_score = Blind.cry_cap_score or function(self, score)
+    if not self.disabled then
+        local obj = self.config.blind
+        if obj.cry_cap_score and type(obj.cry_cap_score) == 'function' then
+            return obj:cry_cap_score(score)
+        end
+    end
+    return score
 end
 
 local set_blindref = Blind.set_blind

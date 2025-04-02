@@ -5,7 +5,7 @@
     "description": "Expands Blinds by adding functions",
     "prefix": "blindexpander",
     "main_file": "blindexpander.lua",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "dependencies": [
         "Steamodded (>=1.0.0~ALPHA-1314d)"
     ],

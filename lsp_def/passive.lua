@@ -20,8 +20,8 @@
 ---@field obj_table? table<string, blindexpander.Passive|table> Table of objects registered to this class.
 ---@field loc_vars? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData): table?.
 ---@field calculate? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData, context: CalcContext): table? Acts as a usual calculate function.
----@field remove? fun(self: blindexpander.Passive, passive: PassiveData, from_disable: boolean?) Called when this passive is removed or disabled. `from_disable` is true if the passive is being disabled.
----@field apply? fun(self: blindexpander.Passive, passive: PassiveData, from_disable: boolean?) Called when this passive is applied to the Blind or this passive becomes reenabled. `from_disable` is true if the passive is being reenabled.
+---@field remove? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData, from_disable: boolean?) Called when this passive is removed or disabled. `from_disable` is true if the passive is being disabled.
+---@field apply? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData, from_disable: boolean?) Called when this passive is applied to the Blind or this passive becomes reenabled. `from_disable` is true if the passive is being reenabled.
 
 ---@overload fun(self: blindexpander.Passive): blindexpander.Passive
 blindexpander.Passive = setmetatable({}, {

@@ -118,7 +118,7 @@ local function startup()
                     data.disabled = true
                     local obj = blindexpander.Passives[key]
                     if obj then
-                        obj:remove(true)
+                        obj:remove(self, data, true)
                     end
                     G.E_MANAGER:add_event(Event({
                         trigger = 'immediate',
@@ -162,7 +162,7 @@ local function startup()
                     data.disabled = false
                     local obj = blindexpander.Passives[key]
                     if obj then
-                        obj:apply(data, true)
+                        obj:apply(self, data, true)
                     end
                     G.E_MANAGER:add_event(Event({
                         trigger = 'immediate',
@@ -212,7 +212,7 @@ local function startup()
                 config = cfg
             }
             if obj then
-                obj:apply(data, false)
+                obj:apply(self, data, false)
             end
             self.passives_data[#self.passives_data + 1] = data
             G.E_MANAGER:add_event(Event({
@@ -253,7 +253,7 @@ local function startup()
                 if data.key == key then
                     local obj = blindexpander.Passives[key]
                     if obj then
-                        obj:remove(data, false)
+                        obj:remove(self, data, false)
                     end
                     table.remove(self.passives_data, i)
                     G.E_MANAGER:add_event(Event({

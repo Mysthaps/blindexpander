@@ -89,7 +89,7 @@ local function startup()
         local disabled = G.GAME.blind.disabled or passive_data.disabled
         local loc_res = {}
         if obj then
-            loc_res = obj:loc_vars(G.GAME.blind, passive_data)
+            loc_res = obj:loc_vars(G.GAME.blind, passive_data) or {}
         end
         local no_name = loc_res.no_name
         local loc_key = loc_res.key or passive_data.key

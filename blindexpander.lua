@@ -368,7 +368,7 @@ local function startup()
         if self.buttons then self.buttons:remove(); self.buttons = nil end
         if self.shop then self.shop:remove(); self.shop = nil end
 
-        if not G.STATE_COMPLETE and (not G.GAME.blind.disabled or G.GAME.blind.config.blind.summon_while_disabled) and (G.GAME.blind.config.blind.summon or G.GAME.blind.config.blind.phases or G.GAME.blind.original_blind) then
+        if not G.STATE_COMPLETE and (not G.GAME.blind.disabled or (G.GAME.blind.config.blind.summon and G.GAME.blind.config.blind.summon_while_disabled)) and (G.GAME.blind.config.blind.summon or G.GAME.blind.config.blind.phases or G.GAME.blind.original_blind) then
             if G.GAME.blind.original_blind and not G.GAME.blind.config.blind.summon then -- Triggers if blind is not the original blind
                 -- Reset to the original blind's values
                 if G.GAME.blind.original_blind ~= G.GAME.blind.config.blind.key then

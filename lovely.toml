@@ -35,7 +35,7 @@ blindexpander.Passive = SMODS.GameObject:extend({
     class_prefix = "psv",
     calculate = function(self, blind, passive, context) end,
     inject = function(self, i) end,
-    disable = function(self) end,
+    remove = function(self) end,
     apply = function(self, from_disable) end
 })
 '''

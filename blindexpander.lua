@@ -162,7 +162,7 @@ local function startup()
                     data.disabled = false
                     local obj = blindexpander.Passives[key]
                     if obj then
-                        obj:apply(true)
+                        obj:apply(data, true)
                     end
                     G.E_MANAGER:add_event(Event({
                         trigger = 'immediate',
@@ -180,7 +180,7 @@ local function startup()
                     for _, v in ipairs(G.jokers.cards) do
                         self:debuff_card(v)
                     end
-                    if not self.children.alert then
+                    if not self.children.alert and not self.disabled then
                        self.children.alert = UIBox{
                             definition = create_UIBox_card_alert(),
                             config = {
@@ -204,14 +204,17 @@ local function startup()
             local obj = blindexpander.Passives[key]
             local cfg = {}
             if obj then
-                obj:apply(false)
                 cfg = copy_table(obj.config)
             end
-            self.passives_data[#self.passives_data + 1] = {
+            local data = {
                 disabled = false,
                 key = key,
                 config = cfg
             }
+            if obj then
+                obj:apply(data, false)
+            end
+            self.passives_data[#self.passives_data + 1] = data
             G.E_MANAGER:add_event(Event({
                 trigger = 'immediate',
                 func = function()
@@ -250,7 +253,7 @@ local function startup()
                 if data.key == key then
                     local obj = blindexpander.Passives[key]
                     if obj then
-                        obj:remove(false)
+                        obj:remove(data, false)
                     end
                     table.remove(self.passives_data, i)
                     G.E_MANAGER:add_event(Event({
@@ -365,7 +368,7 @@ local function startup()
         if self.buttons then self.buttons:remove(); self.buttons = nil end
         if self.shop then self.shop:remove(); self.shop = nil end
 
-        if not G.STATE_COMPLETE and not G.GAME.blind.disabled and (G.GAME.blind.config.blind.summon or G.GAME.blind.config.blind.phases or G.GAME.blind.original_blind) then
+        if not G.STATE_COMPLETE and (not G.GAME.blind.disabled or G.GAME.blind.config.blind.summon_while_disabled) and (G.GAME.blind.config.blind.summon or G.GAME.blind.config.blind.phases or G.GAME.blind.original_blind) then
             if G.GAME.blind.original_blind and not G.GAME.blind.config.blind.summon then -- Triggers if blind is not the original blind
                 -- Reset to the original blind's values
                 if G.GAME.blind.original_blind ~= G.GAME.blind.config.blind.key then

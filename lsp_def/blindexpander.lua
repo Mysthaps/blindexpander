@@ -19,10 +19,19 @@ function SMODS.current_mod.passive_ui_size() end
 ---@return boolean
 function find_passive(key) end
 
+--- Gets the original Blind's key when a Blind is set. Will recursively check a Blind's summon until the Blind either does not precede the original or does not have a summon.
+---@param key string
+---@return string
+function get_actual_original_blind(key) end
+
+---@type table<string, blindexpander.Passive>
+blindexpander.Passives = {}
+
 ---@class SMODS.GameObject: metatable
 ---@class SMODS.Blind: SMODS.GameObject
----@field passives? table Contains passive keys.
+---@field passives? string[] Contains passive keys.
 ---@field summon? string Key of the Blind to be fought after current Blind ends.
+---@field precedes_original? boolean If true, its summon is considered the original Blind. Will recursively check the Blind's chain of summons.
 ---@field phases? number Amount of times Blind need to be defeated before round ends.
 ---@field phase_refresh? boolean Whether the deck should be refreshed when Blind is defeated.
 ---@field mod_score? fun(self: SMODS.Blind|table, score: number): number Modifies the score. 

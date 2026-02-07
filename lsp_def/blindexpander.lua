@@ -1,9 +1,9 @@
 ---@meta
 
 --- Returns a row node that contains information of a passive.
----@param passive string Key of the passive.
+---@param passive_data PassiveData A table representing a Passive.
 ---@return table
-function info_from_passive(passive) end
+function info_from_passive(passive_data) end
 
 --- Returns a root node that contains the UIBox of all passives.
 ---@param blind table Current blind. (G.GAME.blind)
@@ -14,7 +14,7 @@ function create_UIBox_blind_passive(blind) end
 ---@return number passive_width Width of the passive UIBox, default 6
 function SMODS.current_mod.passive_ui_size() end
 
---- Finds whether a passive is on the current blind or not.
+--- Finds whether or not the current blind has a passive with the given key.
 ---@param key string Key of the passive.
 ---@return boolean
 function find_passive(key) end

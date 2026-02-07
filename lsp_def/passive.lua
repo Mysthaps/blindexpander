@@ -20,8 +20,8 @@
 ---@field obj_table? table<string, blindexpander.Passive|table> Table of objects registered to this class.
 ---@field loc_vars? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData): table?.
 ---@field calculate? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData, context: CalcContext): table? Acts as a usual calculate function.
----@field remove? fun(self: blindexpander.Passive, passive: PassiveData, from_disable: boolean?) Called when this passive is removed or disabled.
----@field apply? fun(self: blindexpander.Passive, passive: PassiveData, from_disable: boolean?) Called when this passive is applied to the Blind or this passive becomes undisabled.
+---@field remove? fun(self: blindexpander.Passive, passive: PassiveData, from_disable: boolean?) Called when this passive is removed or disabled. `from_disable` is true if the passive is being disabled.
+---@field apply? fun(self: blindexpander.Passive, passive: PassiveData, from_disable: boolean?) Called when this passive is applied to the Blind or this passive becomes reenabled. `from_disable` is true if the passive is being reenabled.
 
 ---@overload fun(self: blindexpander.Passive): blindexpander.Passive
 blindexpander.Passive = setmetatable({}, {
@@ -32,8 +32,12 @@ blindexpander.Passive = setmetatable({}, {
 
 ---@class Blind
 ---@field passives_data? PassiveData[] Contains tables that store the states of individual passives.
+---@field enable_passive? fun(self: Blind, key: string) Enables the passive with the given key. Does nothing if the blind does not have a passive with the given key.
+---@field disable_passive? fun(self: Blind, key: string) Disables the passive with the given key. Does nothing if the blind does not have a passive with the given key.
+---@field add_passive? fun(self: Blind, key: string) Adds the passive with the given key to the current blind. Does nothing if the blind has a passive with the given key.
+---@field remove_passive? fun(self: Blind, key: string) Removes the passive with the given key from the current blind. Does nothing if the blind does not have a passive with the given key.
 
 ---@class PassiveData
----@field config table
----@field disabled boolean
----@field key string
+---@field config table The internal state of the passive.
+---@field disabled boolean Whether or not this passive is disabled.
+---@field key string The key of the passive.

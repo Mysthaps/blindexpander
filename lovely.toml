@@ -60,7 +60,7 @@ blindexpander.Passive = SMODS.GameObject:extend({
         }
         local res = {}
         if self.loc_vars and type(self.loc_vars) == 'function' then
-            res = self:loc_vars(info_queue, card) or {}
+            res = self:loc_vars(nil, card) or {}
             target.vars = res.vars or target.vars
             target.key = res.key or target.key
             target.set = res.set or target.set

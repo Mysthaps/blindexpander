@@ -214,6 +214,7 @@ local function startup()
             if obj then
                 obj:apply(self, data, false)
             end
+            self.passives_data = self.passives_data or {}
             self.passives_data[#self.passives_data + 1] = data
             G.E_MANAGER:add_event(Event({
                 trigger = 'immediate',
@@ -319,7 +320,7 @@ local function startup()
     function Blind.hover(self)
         if not G.CONTROLLER.dragging.target or G.CONTROLLER.using_touch then 
             if not self.hovering and self.states.visible and self.children.animatedSprite.states.visible then
-                if self.passives_data then
+                if self.passives_data and #self.passives_data > 0 then
                     G.blind_passive = UIBox{
                         definition = create_UIBox_blind_passive(self),
                         config = {

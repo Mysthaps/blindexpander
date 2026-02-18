@@ -1,7 +1,7 @@
 {
     "id": "blindexpander",
     "name": "Blind Expander",
-    "author": ["Mysthaps"],
+    "author": ["Mysthaps", "ThunderEdge"],
     "description": "Library mod to expand Blind functionalities",
     "prefix": "blindexpander",
     "main_file": "blindexpander.lua",

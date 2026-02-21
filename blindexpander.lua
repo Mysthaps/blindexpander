@@ -544,6 +544,21 @@ local function startup()
                     config = cfg
                 }
             end
+            if blind.extra_collection_passives then
+                for _, key in ipairs(blind.extra_collection_passives) do
+                    local obj = blindexpander.Passives[key]
+                    local cfg = {}
+                    if obj then
+                        cfg = copy_table(obj.config)
+                        obj:apply(false)
+                    end
+                    fake_data[#fake_data + 1] = {
+                        disabled = false,
+                        key = key,
+                        config = cfg
+                    }
+                end
+            end
             ret.config.object = Moveable()
             ret.config.ref_table = next(fake_data) and fake_data or nil
             ret.config.func = "show_blind_passives_infotip"

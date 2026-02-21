@@ -32,10 +32,10 @@ blindexpander.Passive = setmetatable({}, {
 
 ---@class Blind
 ---@field passives_data? PassiveData[] Contains tables that store the states of individual passives.
----@field enable_passive? fun(self: Blind, key: string) Enables the passive with the given key. Does nothing if the blind does not have a passive with the given key.
----@field disable_passive? fun(self: Blind, key: string) Disables the passive with the given key. Does nothing if the blind does not have a passive with the given key.
----@field add_passive? fun(self: Blind, key: string) Adds the passive with the given key to the current blind. Does nothing if the blind has a passive with the given key.
----@field remove_passive? fun(self: Blind, key: string) Removes the passive with the given key from the current blind. Does nothing if the blind does not have a passive with the given key.
+---@field enable_passive? fun(self: Blind, key: string, no_update: boolean, silent: boolean) Enables the passive with the given key. Does nothing if the blind does not have a passive with the given key.
+---@field disable_passive? fun(self: Blind, key: string, no_update: boolean, silent: boolean) Disables the passive with the given key. Does nothing if the blind does not have a passive with the given key.
+---@field add_passive? fun(self: Blind, key: string, no_update: boolean, silent: boolean) Adds the passive with the given key to the current blind. Does nothing if the blind has a passive with the given key.
+---@field remove_passive? fun(self: Blind, key: string, no_update: boolean, silent: boolean) Removes the passive with the given key from the current blind. Does nothing if the blind does not have a passive with the given key.
 
 ---@class PassiveData
 ---@field config table The internal state of the passive.

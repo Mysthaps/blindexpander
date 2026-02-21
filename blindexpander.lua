@@ -227,6 +227,13 @@ local function startup()
         end
     end
 
+    local defeat_blind_hook = Blind.defeat
+    function Blind:defeat(silent)
+        defeat_blind_hook(self, silent)
+        self.passives_data = {}
+        G.GAME.blind.original_blind = nil
+    end
+
     function Blind:add_passive(key, no_update, silent)
         if not find_passive(key) then
             local obj = blindexpander.Passives[key]

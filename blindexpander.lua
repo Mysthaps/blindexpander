@@ -9,7 +9,7 @@
 --- If passive description is too long, changing how it is formatted instead of changing UIBox width is preferred
 
 to_big = to_big or function(x) return x end
-local BLINDEXPANDER_VERSION = 102010
+local BLINDEXPANDER_VERSION = 102020
 
 local function startup()
     if blindexpander.started_up then return end
@@ -86,7 +86,7 @@ local function startup()
             end
         end
         local obj = blindexpander.Passives[passive_data.key]
-        local disabled = G.GAME.blind.disabled or passive_data.disabled
+        local disabled = (G.GAME.blind or {}).disabled or passive_data.disabled
         local loc_res = {}
         if obj then
             loc_res = obj:loc_vars(G.GAME.blind, passive_data) or {}
@@ -501,6 +501,46 @@ local function startup()
         else
             return SMODS.merge_defaults(unpack(final_ret))
         end
+    end
+
+    G.FUNCS.show_blind_passives_infotip = function(e)
+        if e.config.ref_table then
+            local num_passives = #e.config.ref_table
+            local y_offset = 0.3*math.max(num_passives - 2, 0)
+            e.children.info = UIBox{
+                definition = create_UIBox_blind_passive({passives_data = e.config.ref_table}),
+                config = (not e.config.ref_table or not e.config.ref_table.card_pos or e.config.ref_table.card_pos.x > G.ROOM.T.w*0.4) and
+                    {offset = {x=-0.13,y=y_offset}, align = 'cl', parent = e} or
+                    {offset = {x=0.13,y=y_offset}, align = 'cr', parent = e}
+            }
+            e.children.info:align_to_major()
+            e.config.ref_table = nil
+        end
+    end
+
+    local blind_collection_UIBox_ref = create_UIBox_blind_popup
+    function create_UIBox_blind_popup(blind, ...)
+        local ret = blind_collection_UIBox_ref(blind, ...)
+        if blind.passives then
+            local fake_data = {}
+            for _, key in ipairs(blind.passives) do
+                local obj = blindexpander.Passives[key]
+                local cfg = {}
+                if obj then
+                    cfg = copy_table(obj.config)
+                    obj:apply(false)
+                end
+                fake_data[#fake_data + 1] = {
+                    disabled = false,
+                    key = key,
+                    config = cfg
+                }
+            end
+            ret.config.object = Moveable()
+            ret.config.ref_table = next(fake_data) and fake_data or nil
+            ret.config.func = "show_blind_passives_infotip"
+        end
+        return ret
     end
 end
 

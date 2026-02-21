@@ -536,7 +536,6 @@ local function startup()
                 local cfg = {}
                 if obj then
                     cfg = copy_table(obj.config)
-                    obj:apply(false)
                 end
                 fake_data[#fake_data + 1] = {
                     disabled = false,
@@ -550,7 +549,6 @@ local function startup()
                     local cfg = {}
                     if obj then
                         cfg = copy_table(obj.config)
-                        obj:apply(false)
                     end
                     fake_data[#fake_data + 1] = {
                         disabled = false,

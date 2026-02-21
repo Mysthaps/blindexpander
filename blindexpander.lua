@@ -37,13 +37,16 @@ local function startup()
                     local cfg = {}
                     if obj then
                         cfg = copy_table(obj.config)
-                        obj:apply(false)
                     end
-                    self.passives_data[#self.passives_data + 1] = {
+                    local data = {
                         disabled = false,
                         key = key,
                         config = cfg
                     }
+                    self.passives_data[#self.passives_data + 1] = data
+                    if obj then
+                        obj:apply(self, data, false)
+                    end
                 end
                 self.children.alert = UIBox{
                     definition = create_UIBox_card_alert(),
@@ -636,6 +639,7 @@ end
 
 SMODS.current_mod.calculate = function (self, context)
     if context.end_of_round and not context.game_over and context.main_eval and context.beat_boss then
+        print("HI")
         G.GAME.blindexpander_hovered_this_ante[G.GAME.blind.config.blind.key] = nil
     end
 end

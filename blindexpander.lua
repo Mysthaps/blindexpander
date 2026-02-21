@@ -9,7 +9,7 @@
 --- If passive description is too long, changing how it is formatted instead of changing UIBox width is preferred
 
 to_big = to_big or function(x) return x end
-local BLINDEXPANDER_VERSION = 102020
+local BLINDEXPANDER_VERSION = 102030
 
 local function startup()
     if blindexpander.started_up then return end
@@ -611,4 +611,10 @@ local injectItemsref = SMODS.injectItems
 function SMODS.injectItems()
     injectItemsref()
     blindexpander.startup()
+end
+
+SMODS.current_mod.calculate = function (self, context)
+    if context.end_of_round and not context.game_over and context.main_eval and context.beat_boss then
+        G.GAME.blindexpander_hovered_this_ante[G.GAME.blind.config.blind.key] = nil
+    end
 end

@@ -29,6 +29,7 @@ local function startup()
     local set_blindref = Blind.set_blind
     function Blind.set_blind(self, blind, reset, silent)
         if not reset then
+            G.GAME.blind.first_faced_blind = blind and blind.key
             self.passives = blind and lobc_deep_copy(blind.passives)
             if self.passives then
                 self.passives_data = {}
@@ -457,7 +458,6 @@ local function startup()
                         obj:defeat()
                     end
                     G.GAME.blind.original_blind = G.GAME.blind.original_blind or get_actual_original_blind(G.GAME.blind.config.blind.key)
-                    G.GAME.blind.first_faced_blind = G.GAME.blind.config.blind.key
                     G.GAME.blind:set_blind(G.P_BLINDS[G.GAME.blind.config.blind.summon])
                     G.GAME.blind.dollars = G.P_BLINDS[G.GAME.blind.original_blind].dollars
                     G.GAME.blind.boss = G.P_BLINDS[G.GAME.blind.original_blind].boss

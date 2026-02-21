@@ -30,6 +30,7 @@ blindexpander.Passives = {}
 ---@class SMODS.GameObject: metatable
 ---@class SMODS.Blind: SMODS.GameObject
 ---@field passives? string[] Contains passive keys.
+---@field extra_collection_passives? string[] Keys of extra passives to show in collection only. Use to display 
 ---@field summon_while_disabled? boolean If true, this Blind will summon the next Blind, even if this Blind is disabled.
 ---@field summon? string Key of the Blind to be fought after current Blind ends.
 ---@field precedes_original? boolean If true, its summon is considered the original Blind. Will recursively check the Blind's chain of summons.

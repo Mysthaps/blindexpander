@@ -612,3 +612,9 @@ function SMODS.injectItems()
     injectItemsref()
     blindexpander.startup()
 end
+
+SMODS.current_mod.calculate = function (self, context)
+    if context.end_of_round and not context.game_over and context.main_eval and context.beat_boss then
+        G.GAME.blindexpander_hovered_this_ante[G.GAME.blind.config.blind.key] = nil
+    end
+end

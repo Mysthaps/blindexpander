@@ -22,6 +22,7 @@
 ---@field calculate? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData, context: CalcContext): table? Acts as a usual calculate function.
 ---@field remove? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData, from_disable: boolean?) Called when this passive is removed or disabled. `from_disable` is true if the passive is being disabled.
 ---@field apply? fun(self: blindexpander.Passive, blind: Blind, passive: PassiveData, from_disable: boolean?) Called when this passive is applied to the Blind or this passive becomes reenabled. `from_disable` is true if the passive is being reenabled.
+---@field fixed? boolean Set to `true` to prevent this passive from being disabled or removed.
 
 ---@overload fun(self: blindexpander.Passive): blindexpander.Passive
 blindexpander.Passive = setmetatable({}, {
@@ -41,4 +42,4 @@ blindexpander.Passive = setmetatable({}, {
 ---@field config table The internal state of the passive.
 ---@field disabled boolean Whether or not this passive is disabled.
 ---@field key string The key of the passive.
----@field blind_data? table The base object for the Blind this passive is on.
+---@field blind_data? table The base object for the Blind this passive is on. Is nil if this passive is viewed through a normal infotip.

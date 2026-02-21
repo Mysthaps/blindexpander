@@ -120,45 +120,47 @@ local function startup()
 
     function Blind:disable_passive(key, no_update, silent)
         if find_passive(key) then
-            for _, data in ipairs(self.passives_data) do
-                if data.key == key and not data.disabled then
-                    data.disabled = true
-                    local obj = blindexpander.Passives[key]
-                    if obj then
-                        obj:remove(self, data, true)
-                    end
-                    if not no_update then
-                        G.E_MANAGER:add_event(Event({
-                            trigger = 'immediate',
-                            func = function()
-                            if self.boss and G.GAME.chips - G.GAME.blind.chips >= 0 then
-                                G.STATE = G.STATES.NEW_ROUND
-                                G.STATE_COMPLETE = false
+            local obj = blindexpander.Passives[key]
+            if not (obj or {}).fixed then
+                for _, data in ipairs(self.passives_data) do
+                    if data.key == key and not data.disabled then
+                        data.disabled = true
+                        if obj then
+                            obj:remove(self, data, true)
+                        end
+                        if not no_update then
+                            G.E_MANAGER:add_event(Event({
+                                trigger = 'immediate',
+                                func = function()
+                                if self.boss and G.GAME.chips - G.GAME.blind.chips >= 0 then
+                                    G.STATE = G.STATES.NEW_ROUND
+                                    G.STATE_COMPLETE = false
+                                end
+                                return true
                             end
-                            return true
+                            }))
+                            for _, v in ipairs(G.playing_cards) do
+                                self:debuff_card(v)
+                            end
+                            for _, v in ipairs(G.jokers.cards) do
+                                self:debuff_card(v)
+                            end
                         end
-                        }))
-                        for _, v in ipairs(G.playing_cards) do
-                            self:debuff_card(v)
-                        end
-                        for _, v in ipairs(G.jokers.cards) do
-                            self:debuff_card(v)
-                        end
-                    end
-                    if not self.children.alert then
-                        self.children.alert = UIBox{
-                            definition = create_UIBox_card_alert(),
-                            config = {
-                                align = "tri",
-                                offset = {
-                                    x = 0.1, y = 0
-                                },
-                                parent = self
+                        if not self.children.alert then
+                            self.children.alert = UIBox{
+                                definition = create_UIBox_card_alert(),
+                                config = {
+                                    align = "tri",
+                                    offset = {
+                                        x = 0.1, y = 0
+                                    },
+                                    parent = self
+                                }
                             }
-                        }
+                        end
+                        if not silent then self:wiggle() end
+                        break
                     end
-                    if not silent then self:wiggle() end
-                    break
                 end
             end
         end
@@ -276,45 +278,47 @@ local function startup()
 
     function Blind:remove_passive(key, no_update, silent)
         if find_passive(key) then
-            for i, data in ipairs(self.passives_data) do
-                if data.key == key then
-                    local obj = blindexpander.Passives[key]
-                    if obj then
-                        obj:remove(self, data, false)
-                    end
-                    table.remove(self.passives_data, i)
-                    if not no_update then
-                        G.E_MANAGER:add_event(Event({
-                            trigger = 'immediate',
-                            func = function()
-                            if self.boss and G.GAME.chips - G.GAME.blind.chips >= 0 then
-                                G.STATE = G.STATES.NEW_ROUND
-                                G.STATE_COMPLETE = false
+            local obj = blindexpander.Passives[key]
+            if not (obj or {}).fixed then
+                for i, data in ipairs(self.passives_data) do
+                    if data.key == key then
+                        if obj then
+                            obj:remove(self, data, false)
+                        end
+                        table.remove(self.passives_data, i)
+                        if not no_update then
+                            G.E_MANAGER:add_event(Event({
+                                trigger = 'immediate',
+                                func = function()
+                                if self.boss and G.GAME.chips - G.GAME.blind.chips >= 0 then
+                                    G.STATE = G.STATES.NEW_ROUND
+                                    G.STATE_COMPLETE = false
+                                end
+                                return true
                             end
-                            return true
+                            }))
+                            for _, v in ipairs(G.playing_cards) do
+                                self:debuff_card(v)
+                            end
+                            for _, v in ipairs(G.jokers.cards) do
+                                self:debuff_card(v)
+                            end
                         end
-                        }))
-                        for _, v in ipairs(G.playing_cards) do
-                            self:debuff_card(v)
-                        end
-                        for _, v in ipairs(G.jokers.cards) do
-                            self:debuff_card(v)
-                        end
-                    end
-                    if #self.passives_data ~= 0 and not self.children.alert then
-                        self.children.alert = UIBox{
-                            definition = create_UIBox_card_alert(),
-                            config = {
-                                align = "tri",
-                                offset = {
-                                    x = 0.1, y = 0
-                                },
-                                parent = self
+                        if #self.passives_data ~= 0 and not self.children.alert then
+                            self.children.alert = UIBox{
+                                definition = create_UIBox_card_alert(),
+                                config = {
+                                    align = "tri",
+                                    offset = {
+                                        x = 0.1, y = 0
+                                    },
+                                    parent = self
+                                }
                             }
-                        }
+                        end
+                        if not silent then self:wiggle() end
+                        break
                     end
-                    if not silent then self:wiggle() end
-                    break
                 end
             end
         end

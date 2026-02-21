@@ -166,7 +166,7 @@ local function startup()
                 if data.key == key and data.disabled then
                     data.disabled = false
                     local obj = blindexpander.Passives[key]
-                    if obj then
+                    if obj and not self.disabled then
                         obj:apply(self, data, true)
                     end
                     if not no_update then
@@ -230,7 +230,7 @@ local function startup()
                 key = key,
                 config = cfg
             }
-            if obj then
+            if obj and not self.disabled then
                 obj:apply(self, data, false)
             end
             self.passives_data = self.passives_data or {}

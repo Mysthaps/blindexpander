@@ -42,8 +42,11 @@ local function startup()
                     local data = {
                         disabled = false,
                         key = key,
-                        config = cfg
+                        config = cfg,
                     }
+                    if blind then
+                        data.blind_data = blind
+                    end
                     self.passives_data[#self.passives_data + 1] = data
                     if obj then
                         obj:apply(self, data, false)
@@ -229,7 +232,8 @@ local function startup()
             local data = {
                 disabled = false,
                 key = key,
-                config = cfg
+                config = cfg,
+                blind_data = self.config.blind
             }
             if obj and not self.disabled then
                 obj:apply(self, data, false)
@@ -556,7 +560,8 @@ local function startup()
                 fake_data[#fake_data + 1] = {
                     disabled = false,
                     key = key,
-                    config = cfg
+                    config = cfg,
+                    blind_data = blind
                 }
             end
             if blind.extra_collection_passives then
@@ -569,7 +574,8 @@ local function startup()
                     fake_data[#fake_data + 1] = {
                         disabled = false,
                         key = key,
-                        config = cfg
+                        config = cfg,
+                        blind_data = blind
                     }
                 end
             end

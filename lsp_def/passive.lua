@@ -41,3 +41,4 @@ blindexpander.Passive = setmetatable({}, {
 ---@field config table The internal state of the passive.
 ---@field disabled boolean Whether or not this passive is disabled.
 ---@field key string The key of the passive.
+---@field blind_data? table The base object for the Blind this passive is on.

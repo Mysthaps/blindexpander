@@ -195,7 +195,8 @@ function blind_choice.animation:hover()
             fake_data[#fake_data + 1] = {
                 disabled = false,
                 key = key,
-                config = cfg
+                config = cfg,
+                blind_data = blind_choice.config
             }
         end
         G.blind_passive = UIBox{

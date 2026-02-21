@@ -147,6 +147,6 @@ card.config.h_popup = create_UIBox_blind_popup(v, card.config.blind.discovered)
 '''
 payload = '''
 if card.config.h_popup.config.ref_table then
-    card.config.h_popup.config.ref_table.card_pos = card.T.x
+    card.config.h_popup.config.ref_table.card_pos = {x = card.T.x, y = card.T.y}
 end
 '''

@@ -505,11 +505,13 @@ local function startup()
 
     G.FUNCS.show_blind_passives_infotip = function(e)
         if e.config.ref_table then
+            local num_passives = #e.config.ref_table
+            local y_offset = 0.3*math.max(num_passives - 2, 0)
             e.children.info = UIBox{
                 definition = create_UIBox_blind_passive({passives_data = e.config.ref_table}),
-                config = (not e.config.ref_table or not e.config.ref_table[1].config.card_pos or e.config.ref_table[1].config.card_pos > G.ROOM.T.w*0.4) and
-                    {offset = {x=-0.13,y=0}, align = 'cl', parent = e} or
-                    {offset = {x=0.13,y=0}, align = 'cr', parent = e}
+                config = (not e.config.ref_table or not e.config.ref_table.card_pos or e.config.ref_table.card_pos.x > G.ROOM.T.w*0.4) and
+                    {offset = {x=-0.13,y=y_offset}, align = 'cl', parent = e} or
+                    {offset = {x=0.13,y=y_offset}, align = 'cr', parent = e}
             }
             e.children.info:align_to_major()
             e.config.ref_table = nil

@@ -84,6 +84,9 @@ local function startup()
         self.passives_data = blindTable.passives_data
         self.original_blind = blindTable.original_blind
         blind_loadref(self, blindTable)
+        for _, passive in ipairs(self.passives_data) do
+            passive.blind_data = self.config.blind
+        end
     end
     function info_from_passive(passive_data)
         local width = 6

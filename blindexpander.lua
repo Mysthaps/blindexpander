@@ -108,7 +108,7 @@ local function startup()
             desc[#desc+1] = {n=G.UIT.R, config={align = "cl"}, nodes=v}
         end
         local name_nodes = localize{type = 'name', key = loc_key, set = loc_set, name_nodes = {}, vars = loc_res.vars or {}}
-        if disabled then
+        if disabled and not obj.fixed then
             name_nodes[1].nodes[1].nodes[1].config.strikethrough = G.C.RED
         end
         return 

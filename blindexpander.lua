@@ -206,6 +206,18 @@ local function startup()
         end
     end
 
+    local disable_blind_ref = Blind.disable
+    function Blind:disable()
+        disable_blind_ref(self)
+        if self.disabled then
+            for _, passive in ipairs(self.passives_data) do
+                if not passive.disabled then
+                    self:disable_passive(passive.key, nil, true)
+                end
+            end
+        end
+    end
+
     function Blind:add_passive(key, no_update, silent)
         if not find_passive(key) then
             local obj = blindexpander.Passives[key]
@@ -445,6 +457,7 @@ local function startup()
                         obj:defeat()
                     end
                     G.GAME.blind.original_blind = G.GAME.blind.original_blind or get_actual_original_blind(G.GAME.blind.config.blind.key)
+                    G.GAME.blind.first_faced_blind = G.GAME.blind.config.blind.key
                     G.GAME.blind:set_blind(G.P_BLINDS[G.GAME.blind.config.blind.summon])
                     G.GAME.blind.dollars = G.P_BLINDS[G.GAME.blind.original_blind].dollars
                     G.GAME.blind.boss = G.P_BLINDS[G.GAME.blind.original_blind].boss
@@ -639,7 +652,6 @@ end
 
 SMODS.current_mod.calculate = function (self, context)
     if context.end_of_round and not context.game_over and context.main_eval and context.beat_boss then
-        print("HI")
-        G.GAME.blindexpander_hovered_this_ante[G.GAME.blind.config.blind.key] = nil
+        G.GAME.blindexpander_hovered_this_ante[G.GAME.blind.first_faced_blind] = nil
     end
 end

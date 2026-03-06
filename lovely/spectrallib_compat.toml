@@ -1,0 +1,15 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Offsets
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Spectrallib "blind_functions.lua"]'''
+pattern = "x = 0.15,"
+position = "at"
+payload = '''
+x = G.blind_passive and (0.3 + G.blind_passive.T.w) or 0.15,
+'''
+match_indent = true

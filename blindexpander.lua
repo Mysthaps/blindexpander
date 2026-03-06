@@ -55,7 +55,7 @@ local function startup()
 						config = cfg,
 					}
 					if blind then
-						data.blind_data = blind
+						data.blind_obj = self.config.blind
 					end
 					self.passives_data[#self.passives_data + 1] = data
 					if obj then
@@ -78,6 +78,65 @@ local function startup()
 			end
 		end
 		set_blindref(self, blind, reset, silent)
+	end
+
+	local modifies_draw_ref = SMODS.blind_modifies_draw
+	function SMODS.blind_modifies_draw(key)
+		local res = modifies_draw_ref(key)
+		if G.GAME.blind and G.GAME.blind.passives_data then
+			for _, data in ipairs(G.GAME.blind.passives_data) do
+				if blindexpander.Passives[data.key].modifies_draw then
+					res = true
+					break
+				end
+			end
+		end
+		return res
+	end
+
+	if Spectrallib then
+		local set_copied_blinds_ref = Spectrallib.set_copied_blinds
+		function Spectrallib.set_copied_blinds(blinds, self, silent, reset)
+			set_copied_blinds_ref(blinds, self, silent, reset)
+			for _, k in pairs(blinds) do
+				local s = G.P_BLINDS[k]
+				if s.passives then
+					G.GAME.blind.passives_data = G.GAME.blind.passives_data or {}
+					for _, key in ipairs(s.passives) do
+						local obj = blindexpander.Passives[key]
+						local cfg = {}
+						if obj then
+							cfg = copy_table(obj.config)
+						end
+						local data = {
+							disabled = false,
+							key = key,
+							config = cfg,
+						}
+						data.blind_obj = s
+						if not find_passive(key) then
+							G.GAME.blind.passives_data[#G.GAME.blind.passives_data + 1] = data
+							if obj then
+								obj:apply(self, data, false)
+							end
+						end
+					end
+					if not self.children.alert then
+						self.children.alert = UIBox({
+							definition = create_UIBox_card_alert(),
+							config = {
+								align = "tri",
+								offset = {
+									x = 0.1,
+									y = 0,
+								},
+								parent = self,
+							},
+						})
+					end
+				end
+			end
+		end
 	end
 
 	local blind_saveref = Blind.save
@@ -123,8 +182,11 @@ local function startup()
 			name_nodes[1].nodes[1].nodes[1].config.strikethrough = G.C.RED
 		end
 		return {
-			(not no_name) and { n = G.UIT.R, config = { align = "cl", padding = 0.05, r = 0.1, colour = lighten(G.C.GREY, 0.4), emboss = 0.05 }, nodes = name_nodes }
-				or nil,
+			(not no_name) and {
+				n = G.UIT.R,
+				config = { align = "cl", padding = 0.05, r = 0.1, colour = lighten(G.C.GREY, 0.4), emboss = 0.05 },
+				nodes = name_nodes,
+			} or nil,
 			{
 				n = G.UIT.R,
 				config = {
@@ -133,7 +195,7 @@ local function startup()
 					--minh = 0.4,
 					r = 0.1,
 					padding = 0.05,
-                    emboss = 0.05,
+					emboss = 0.05,
 					colour = desc_nodes.background_colour or G.C.WHITE,
 				},
 				nodes = { { n = G.UIT.R, config = { align = "cm", padding = 0.03 }, nodes = desc } },
@@ -380,9 +442,9 @@ local function startup()
 	function create_UIBox_blind_passive(blind)
 		local passive_lines = {}
 		for _, v in ipairs(blind.passives_data) do
-            local items = info_from_passive(v)
+			local items = info_from_passive(v)
 			passive_lines[#passive_lines + 1] = items[1]
-            passive_lines[#passive_lines + 1] = items[2]
+			passive_lines[#passive_lines + 1] = items[2]
 		end
 		return {
 			n = G.UIT.ROOT,

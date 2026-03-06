@@ -10,10 +10,6 @@ function info_from_passive(passive_data) end
 ---@return table
 function create_UIBox_blind_passive(blind) end
 
---- Allows changing width of passive UIBox.
----@return number passive_width Width of the passive UIBox, default 6
-function SMODS.current_mod.passive_ui_size() end
-
 --- Finds whether or not the current blind has a passive with the given key.
 ---@param key string Key of the passive.
 ---@return boolean

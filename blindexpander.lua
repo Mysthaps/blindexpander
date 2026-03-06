@@ -11,7 +11,7 @@
 to_big = to_big or function(x)
 	return x
 end
-local BLINDEXPANDER_VERSION = 102060
+local BLINDEXPANDER_VERSION = 102070
 
 local function startup()
 	if blindexpander.started_up then

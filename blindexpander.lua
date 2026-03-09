@@ -725,7 +725,7 @@ local function startup()
 						disabled = false,
 						key = key,
 						config = cfg,
-						blind_data = blind,
+						blind_obj = blind,
 					}
 				end
 			end

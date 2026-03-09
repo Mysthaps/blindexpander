@@ -55,7 +55,7 @@ local function startup()
 						config = cfg,
 					}
 					if blind then
-						data.blind_obj = self.config.blind
+						data.blind_obj = blind
 					end
 					self.passives_data[#self.passives_data + 1] = data
 					if obj then
@@ -184,7 +184,7 @@ local function startup()
 		return {
 			(not no_name) and {
 				n = G.UIT.R,
-				config = { align = "cl", padding = 0.05, r = 0.1, colour = lighten(G.C.GREY, 0.4), emboss = 0.05 },
+				config = { align = "cl", padding = 0.05 },
 				nodes = name_nodes,
 			} or nil,
 			{
@@ -452,9 +452,16 @@ local function startup()
 			nodes = {
 				{
 					n = G.UIT.R,
-					config = { align = "cm", emboss = 0.05, r = 0.1, minw = 2.5, padding = 0.05, colour = G.C.GREY },
+					config = {
+						align = "cm",
+						emboss = 0.05,
+						r = 0.1,
+						minw = 2.5,
+						padding = 0.05,
+						colour = lighten(G.C.BLACK, 0.2),
+					},
 					nodes = {
-						{ n = G.UIT.C, config = { align = "lm", padding = 0.1 }, nodes = passive_lines },
+						{ n = G.UIT.C, config = { align = "lm", padding = 0.05 }, nodes = passive_lines },
 					},
 				},
 			},

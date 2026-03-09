@@ -704,7 +704,7 @@ local function startup()
 					disabled = false,
 					key = key,
 					config = cfg,
-					blind_data = blind,
+					blind_obj = blind,
 				}
 			end
 			if blind.extra_collection_passives then

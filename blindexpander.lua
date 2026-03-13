@@ -85,7 +85,7 @@ local function startup()
 		local res = modifies_draw_ref(key)
 		if G.GAME.blind and G.GAME.blind.passives_data then
 			for _, data in ipairs(G.GAME.blind.passives_data) do
-				if blindexpander.Passives[data.key].modifies_draw then
+				if blindexpander.Passives[data.key] and blindexpander.Passives[data.key].modifies_draw then
 					res = true
 					break
 				end
@@ -518,6 +518,50 @@ local function startup()
 		return false
 	end
 
+	local function defeat_swap_blind()
+		if G.GAME.chips < G.GAME.blind.chips then
+			return
+		end
+		local alive = get_alive_blinds()
+		local target
+		if #alive > 0 then
+			target = alive[1].blind_id == G.GAME.blind.blind_id and alive[2].blind_id or alive[1].blind_id
+		end
+		if target then
+			G.STATE = G.STATES.DRAW_TO_HAND
+		end
+		G.E_MANAGER:add_event(Event({
+			trigger = "before",
+			func = function()
+				G.GAME.blind:defeat()
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						G.GAME.blind:swap_blind(target)
+						ease_hands_played(1)
+						ease_discard(1)
+						for _, v in ipairs(G.playing_cards) do
+							G.GAME.blind:debuff_card(v)
+						end
+						for _, v in ipairs(G.jokers.cards) do
+							G.GAME.blind:debuff_card(v)
+						end
+						G.E_MANAGER:add_event(Event({
+							trigger = "after",
+							blockable = false,
+							delay = 0.8 * 1.3 * 2,
+							func = function()
+								G.HUD_blind.alignment.offset.y = 0
+								return true
+							end,
+						}))
+						return true
+					end,
+				}))
+				return true
+			end,
+		}))
+	end
+
 	local update_new_roundref = Game.update_new_round
 	function Game.update_new_round(self, dt)
 		if self.buttons then
@@ -532,28 +576,38 @@ local function startup()
 		if
 			not G.STATE_COMPLETE
 			and (not G.GAME.blind.disabled or (G.GAME.blind.config.blind.summon and G.GAME.blind.config.blind.summon_while_disabled))
-			and (G.GAME.blind.config.blind.summon or G.GAME.blind.config.blind.phases or G.GAME.blind.original_blind)
+			and (
+				G.GAME.blind.config.blind.summon
+				or G.GAME.blind.config.blind.phases
+				or G.GAME.blind.original_blind
+				or #get_alive_blinds() > 0
+			)
 		then
-			if G.GAME.blind.original_blind and not G.GAME.blind.config.blind.summon then -- Triggers if blind is not the original blind
+			if
+				G.GAME.blind.original_blind
+				and not G.GAME.blind.config.blind.summon
+				and G.GAME.blind.original_blind ~= G.GAME.blind.config.blind.key
+			then -- Triggers if blind is not the original blind
 				-- Reset to the original blind's values
 				if G.GAME.blind.original_blind ~= G.GAME.blind.config.blind.key then
+					local blind_id = G.GAME.blind.blind_id
 					G.GAME.blind:set_blind(G.P_BLINDS[G.GAME.blind.original_blind])
+					G.GAME.blind.blind_id = blind_id
 					G.GAME.blind.chips = -1 -- force win blind
 					G.GAME.blind.children.alert = nil
 				end
 
-				local valueToPutInIf = (Talisman and to_big and to_big(G.GAME.chips):gte(to_big(G.GAME.blind.chips)))
-					or to_big(G.GAME.chips) >= to_big(G.GAME.blind.chips)
-				if valueToPutInIf then
+				if G.GAME.chips >= G.GAME.blind.chips then
 					local obj = G.GAME.blind.config.blind
 					if obj.pre_defeat and type(obj.pre_defeat) == "function" then
 						obj:pre_defeat()
 					end
 				end
+
+				defeat_swap_blind()
 			else
-				local valueToPutInIf = (Talisman and to_big and to_big(G.GAME.chips):lt(to_big(G.GAME.blind.chips)))
-					or to_big(G.GAME.chips) < to_big(G.GAME.blind.chips)
-				if G.GAME.current_round.hands_left <= 0 and valueToPutInIf then
+				local same_blind = false
+				if G.GAME.current_round.hands_left <= 0 and G.GAME.chips >= G.GAME.blind.chips then
 					G.GAME.blind.original_blind = nil
 					G.STATE_COMPLETE = true
 					end_round()
@@ -594,6 +648,7 @@ local function startup()
 				local obj = G.GAME.blind.config.blind
 				if obj.phase_change and type(obj.phase_change) == "function" then
 					obj:phase_change()
+					same_blind = true
 				end
 
 				if G.GAME.blind.config.blind.summon then
@@ -604,26 +659,34 @@ local function startup()
 					end
 					G.GAME.blind.original_blind = G.GAME.blind.original_blind
 						or get_actual_original_blind(G.GAME.blind.config.blind.key)
+					local blind_id = G.GAME.blind.blind_id
 					G.GAME.blind:set_blind(G.P_BLINDS[G.GAME.blind.config.blind.summon])
+					G.GAME.blind.blind_id = blind_id
 					G.GAME.blind.dollars = G.P_BLINDS[G.GAME.blind.original_blind].dollars
 					G.GAME.blind.boss = G.P_BLINDS[G.GAME.blind.original_blind].boss
 					G.GAME.current_round.dollars_to_be_earned = G.GAME.blind.dollars > 0
 							and (string.rep(localize("$"), G.GAME.blind.dollars) .. "")
 						or ""
+					same_blind = true
 				end
 
-				G.STATE = G.STATES.DRAW_TO_HAND
-				G.E_MANAGER:add_event(Event({
-					trigger = "ease",
-					blocking = false,
-					ref_table = G.GAME,
-					ref_value = "chips",
-					ease_to = 0,
-					delay = 0.3 * G.SETTINGS.GAMESPEED,
-					func = function(t)
-						return math.floor(t)
-					end,
-				}))
+				if not same_blind then
+					defeat_swap_blind()
+					-- G.GAME.chips = G.GAME.blind_tray[target].scored_chips
+				else
+					G.STATE = G.STATES.DRAW_TO_HAND
+					G.E_MANAGER:add_event(Event({
+						trigger = "ease",
+						blocking = false,
+						ref_table = G.GAME,
+						ref_value = "chips",
+						ease_to = 0,
+						delay = 0.3 * G.SETTINGS.GAMESPEED,
+						func = function(t)
+							return math.floor(t)
+						end,
+					}))
+				end
 			end
 		end
 
@@ -822,3 +885,5 @@ SMODS.current_mod.calculate = function(self, context)
 		G.GAME.blindexpander_hovered_this_ante[G.GAME.blind.first_faced_blind] = nil
 	end
 end
+
+assert(SMODS.load_file("multiboss.lua"))

@@ -886,4 +886,4 @@ SMODS.current_mod.calculate = function(self, context)
 	end
 end
 
-assert(SMODS.load_file("multiboss.lua"))
+assert(SMODS.load_file("multiboss.lua"))()

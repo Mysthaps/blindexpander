@@ -231,3 +231,22 @@ function blind_choice.animation:stop_hover()
     Sprite.stop_hover(self)
 end
 '''
+
+# Save blind to blind tray before starting debuffs
+[[patches]]
+[patches.pattern]
+target = "blind.lua"
+pattern = "--add new debuffs"
+position = "before"
+payload = '''
+if not reset and blind and G.GAME.blind_tray then
+    if not self.original_blind then
+        table.insert(G.GAME.blind_tray, self:save())
+    elseif self.original_blind ~= self.config.blind.key then
+        G.GAME.blind_tray[self.blind_id] = self:save()
+        G.GAME.blind_tray[self.blind_id].scored_chips = 0
+        G.GAME.blind.scored_chips = 0
+    end
+end
+'''
+match_indent = true

@@ -39,7 +39,6 @@ local function startup()
 	local set_blindref = Blind.set_blind
 	function Blind.set_blind(self, blind, reset, silent)
 		if not reset then
-			G.GAME.blind.first_faced_blind = blind and blind.key
 			self.passives = blind and lobc_deep_copy(blind.passives)
 			if self.passives then
 				self.passives_data = {}
@@ -823,8 +822,7 @@ SMODS.current_mod.calculate = function(self, context)
 		and not context.game_over
 		and context.main_eval
 		and context.beat_boss
-		and (G.GAME.blind or {}).first_faced_blind
 	then
-		G.GAME.blindexpander_hovered_this_ante[G.GAME.blind.first_faced_blind] = nil
+		G.GAME.blindexpander_hovered_this_ante = {}
 	end
 end

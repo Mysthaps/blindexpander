@@ -13,6 +13,11 @@ to_big = to_big or function(x)
 end
 local BLINDEXPANDER_VERSION = 200000
 
+---[[
+---
+--- will make lsp defs soon:tm:
+---
+---]]
 local init_blind = false
 local from_swap = false
 local function startup()

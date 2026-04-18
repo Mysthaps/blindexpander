@@ -487,10 +487,10 @@ local function startup()
 					G.blind_passive.attention_text = true
 					G.blind_passive.states.collide.can = false
 					G.blind_passive.states.drag.can = false
-					if self.children.alert then
-						self.children.alert:remove()
-						self.children.alert = nil
-					end
+				end
+				if self.children.alert then
+					self.children.alert:remove()
+					self.children.alert = nil
 				end
 			end
 		end

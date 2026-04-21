@@ -305,7 +305,7 @@ local function startup()
 	local disable_blind_ref = Blind.disable
 	function Blind:disable()
 		disable_blind_ref(self)
-		if self.disabled then
+		if self.disabled and self.passives_data then
 			for _, passive in ipairs(self.passives_data) do
 				if not passive.disabled then
 					self:disable_passive(passive.key, nil, true)

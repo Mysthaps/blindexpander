@@ -517,6 +517,16 @@ local function startup()
 		return false
 	end
 
+	function get_passive_data(key)
+		if G.GAME.blind and G.GAME.blind.passives_data then
+			for _, v in ipairs(G.GAME.blind.passives_data) do
+				if v.key == key then
+					return v
+				end
+			end
+		end
+	end
+
 	local update_new_roundref = Game.update_new_round
 	function Game.update_new_round(self, dt)
 		if self.buttons then

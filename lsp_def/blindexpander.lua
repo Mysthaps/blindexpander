@@ -15,6 +15,13 @@ function create_UIBox_blind_passive(blind) end
 ---@return boolean
 function find_passive(key) end
 
+--- Finds whether or not the current blind has a passive with the given key,
+--- and returns the corresponding PassiveData object if and only if the Blind
+--- has that specific passive.
+---@param key string Key of the passive.
+---@return PassiveData?
+function get_passive_data(key) end
+
 --- Gets the original Blind's key when a Blind is set. Will recursively check a Blind's summon until the Blind either does not precede the original or does not have a summon.
 ---@param key string
 ---@return string

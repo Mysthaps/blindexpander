@@ -682,7 +682,7 @@ local function startup()
 		elseif #final_ret == 1 then
 			return final_ret[1]
 		else
-			return SMODS.merge_defaults(unpack(final_ret))
+			return SMODS.merge_effects(unpack(final_ret))
 		end
 	end
 

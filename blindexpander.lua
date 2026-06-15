@@ -11,7 +11,7 @@
 to_big = to_big or function(x)
 	return x
 end
-local BLINDEXPANDER_VERSION = 102094
+local BLINDEXPANDER_VERSION = 102095
 
 local function startup()
 	if blindexpander.started_up then
@@ -638,12 +638,6 @@ local function startup()
 
 		if G.STATE ~= G.STATES.DRAW_TO_HAND then
 			update_new_roundref(self, dt)
-			for _, v in ipairs(G.playing_cards) do
-				if v.ability.big_bird_enchanted and v.children.lobc_big_bird_particles then
-					v.children.lobc_big_bird_particles:remove()
-					v.children.lobc_big_bird_particles = nil
-				end
-			end
 		end
 	end
 

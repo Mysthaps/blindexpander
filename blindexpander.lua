@@ -11,7 +11,7 @@
 to_big = to_big or function(x)
 	return x
 end
-local BLINDEXPANDER_VERSION = 102095
+local BLINDEXPANDER_VERSION = 102096
 
 local function startup()
 	if blindexpander.started_up then
@@ -84,7 +84,7 @@ local function startup()
 		local res = modifies_draw_ref(key)
 		if G.GAME.blind and G.GAME.blind.passives_data then
 			for _, data in ipairs(G.GAME.blind.passives_data) do
-				if blindexpander.Passives[data.key].modifies_draw then
+				if blindexpander.Passives[data.key] and blindexpander.Passives[data.key].modifies_draw then
 					res = true
 					break
 				end

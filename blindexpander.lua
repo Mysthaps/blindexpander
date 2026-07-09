@@ -11,7 +11,7 @@
 to_big = to_big or function(x)
 	return x
 end
-local BLINDEXPANDER_VERSION = 102096
+local BLINDEXPANDER_VERSION = 102097
 
 local function startup()
 	if blindexpander.started_up then
@@ -438,13 +438,78 @@ local function startup()
 		return key
 	end
 	---@param blind Blind
-	function create_UIBox_blind_passive(blind)
+	function create_UIBox_blind_passive(blind, collision_obj)
 		local passive_lines = {}
 		for _, v in ipairs(blind.passives_data) do
 			local items = info_from_passive(v)
 			passive_lines[#passive_lines + 1] = items[1]
 			passive_lines[#passive_lines + 1] = items[2]
 		end
+		local temp_box = UIBox({
+			definition = {
+				n = G.UIT.ROOT,
+				config = { align = "cm", padding = 0.05, colour = G.C.CLEAR },
+				nodes = passive_lines,
+			},
+			config = {},
+		})
+		local h = temp_box.T.h
+		local maxh = 6
+		local scroll_box = SMODS.UIScrollBox({
+			content = {
+				definition = {
+					n = G.UIT.ROOT,
+					config = { colour = G.C.CLEAR },
+					nodes = {
+						{
+							n = G.UIT.O,
+							config = {
+								object = temp_box,
+							},
+						},
+					},
+				},
+				config = { align = "cm" },
+			},
+			overflow = {
+				node_config = {
+					align = "tm",
+					maxh = maxh,
+				},
+			},
+			sync_mode = "offset",
+			scroll_move = function(self, dt)
+				self._counter = (self._counter or 0) + G.real_dt
+				local scroll_velocity = SMODS.wheel_velocity.y * 1.5 / G.TILESIZE
+				local percent = (self.scroll_offset.y - scroll_velocity) / (h - maxh)
+				percent = math.max(0, math.min(1, percent))
+				if G.CONTROLLER.HID.controller then
+					local clamped = math.max(0, math.min(h - maxh, math.fmod(self._counter, 2 * (h - maxh)) - (h - maxh) / 2))
+					self.scroll_offset.y = clamped
+				elseif collision_obj and collision_obj.states.hover.is then
+					self.scroll_offset.y = percent * (h - maxh)
+				end
+			end,
+		})
+		local scrollbar = h > maxh
+				and {
+					n = G.UIT.C,
+					config = { padding = 0.05 },
+					nodes = {
+						SMODS.GUI.scrollbar({
+							w = 0.2,
+							h = maxh - 0.1,
+							ref_table = scroll_box.scroll_offset,
+							ref_value = "y",
+							max = temp_box.T.h - maxh,
+							min = 0,
+							colour = G.C.FILTER,
+							bg_colour = { 0, 0, 0, 0.1 },
+							ui_type = G.UIT.R
+						}),
+					},
+				}
+			or nil
 		return {
 			n = G.UIT.ROOT,
 			config = { align = "cm", colour = lighten(G.C.JOKER_GREY, 0.5), r = 0.1, emboss = 0.05, padding = 0.05 },
@@ -460,7 +525,11 @@ local function startup()
 						colour = lighten(G.C.BLACK, 0.2),
 					},
 					nodes = {
-						{ n = G.UIT.C, config = { align = "lm", padding = 0.05 }, nodes = passive_lines },
+						scrollbar,
+						{
+							n = G.UIT.C,
+							nodes = { { n = G.UIT.O, config = { object = h > maxh and scroll_box or temp_box } } },
+						},
 					},
 				},
 			},
@@ -473,15 +542,15 @@ local function startup()
 			if not self.hovering and self.states.visible and self.children.animatedSprite.states.visible then
 				if self.passives_data and #self.passives_data > 0 then
 					G.blind_passive = UIBox({
-						definition = create_UIBox_blind_passive(self),
+						definition = create_UIBox_blind_passive(self, G.GAME.blind),
 						config = {
 							major = self,
 							parent = nil,
 							offset = {
-								x = 0.15,
-								y = 0.2 + 0.38 * #self.passives_data,
+								x = 0.15 + 1.5,
+								y = 0,
 							},
-							type = "cr",
+							type = "tli",
 						},
 					})
 					G.blind_passive.attention_text = true
@@ -682,10 +751,9 @@ local function startup()
 
 	G.FUNCS.show_blind_passives_infotip = function(e)
 		if e.config.ref_table then
-			local num_passives = #e.config.ref_table
-			local y_offset = 0.3 * math.max(num_passives - 2, 0)
+			local y_offset = 0
 			e.children.info = UIBox({
-				definition = create_UIBox_blind_passive({ passives_data = e.config.ref_table }),
+				definition = create_UIBox_blind_passive({ passives_data = e.config.ref_table }, e.config.ref_table.card_collider),
 				config = (
 					not e.config.ref_table
 					or not e.config.ref_table.card_pos
@@ -821,12 +889,7 @@ function SMODS.injectItems()
 end
 
 SMODS.current_mod.calculate = function(self, context)
-	if
-		context.end_of_round
-		and not context.game_over
-		and context.main_eval
-		and context.beat_boss
-	then
+	if context.end_of_round and not context.game_over and context.main_eval and context.beat_boss then
 		G.GAME.blindexpander_hovered_this_ante = {}
 	end
 end

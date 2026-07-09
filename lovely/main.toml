@@ -45,6 +45,7 @@ card.config.h_popup = create_UIBox_blind_popup(v, card.config.blind.discovered)
 payload = '''
 if card.config.h_popup.config.ref_table then
     card.config.h_popup.config.ref_table.card_pos = {x = card.T.x, y = card.T.y}
+    card.config.h_popup.config.ref_table.card_collider = card
 end
 '''
 
@@ -96,7 +97,7 @@ function blind_choice.animation:hover()
             }
         end
         G.blind_passive = UIBox{
-            definition = create_UIBox_blind_passive({ passives_data = fake_data }),
+            definition = create_UIBox_blind_passive({ passives_data = fake_data }, self),
             config = {
                 major = self,
                 parent = nil,
